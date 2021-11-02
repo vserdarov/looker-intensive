@@ -14,6 +14,20 @@ view: inventory_items {
     sql: ${TABLE}."COST" ;;
   }
 
+  measure: total_cost {
+    type: sum
+    description: "Total cost of items sold from inventory"
+    sql: ${cost} ;;
+    value_format_name: usd
+  }
+
+  measure: average_cost {
+    type: average
+    description: "Average cost of items sold from inventory"
+    sql: ${cost} ;;
+    value_format_name: usd
+  }
+
   dimension_group: created {
     type: time
     timeframes: [

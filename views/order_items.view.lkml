@@ -84,19 +84,74 @@ view: order_items {
 
   measure: total_sales_price {
     type: sum
+    description: "Total sales from items sold"
     sql: ${sale_price} ;;
     value_format_name: usd
   }
 
   measure: average_sales_price {
     type: average
+    description: "Average sale price of items sold"
     sql: ${sale_price} ;;
     value_format_name: usd
   }
 
   measure: cumulative_total_sales {
     type: running_total
+    description: "Cumulative total sales from items sold (also known as a running total)"
     sql: ${sale_price} ;;
+    value_format_name: usd
+  }
+
+  measure: total_gross_revenue {
+    type: number
+    description: "Total revenue from completed sales (cancelled and returned orders excluded)"
+    sql: ${total_sales_price}
+    filters: [status: "complete"];;
+    value_format_name: usd
+  }
+
+  measure: total_gross_margin_amount {
+    type: number
+    description: "Total difference between the total revenue from completed sales and the cost of the goods that were sold"
+    sql: ${order_items.total_sales_price} - ${inventory_items.total_cost} ;;
+    value_format_name: usd
+  }
+
+  measure: average_gross_margin_amount {
+    type: average
+    description: "Average difference between the total revenue from completed sales and the cost of the goods that were sold"
+    sql: ${order_items.sale_price} - ${inventory_items.cost} ;;
+    value_format_name: usd
+  }
+
+  measure: gross_margin {
+    type: number
+    description: "Total Gross Margin Amount / Total Gross Revenue"
+    sql: ${total_gross_margin_amount} / ${inventory_items.total_cost} ;;
+    value_format_name: usd
+  }
+
+  measure: items_returned {
+    type: number
+    description: "Number of items that were returned by dissatisfied customers"
+     sql: COUNT(${id})
+    filters: [status: "Returned"];;
+    value_format_name: usd
+  }
+
+  measure: items_sold {
+    type: number
+    description: "Number of items sold"
+    sql: COUNT(${id})
+      filters: [status: "Complete"];;
+    value_format_name: usd
+  }
+
+  measure: items_return_rate {
+    type: number
+    description: "Number of Items Returned / total number of items sold"
+    sql: ${items_returned} / ${items_sold};;
     value_format_name: usd
   }
 
