@@ -129,30 +129,28 @@ view: order_items {
     type: number
     description: "Total Gross Margin Amount / Total Gross Revenue"
     sql: ${total_gross_margin_amount} / ${inventory_items.total_cost} ;;
-    value_format_name: usd
+    value_format_name: percent_1
   }
 
   measure: items_returned {
-    type: number
+    type: count_distinct
     description: "Number of items that were returned by dissatisfied customers"
-     sql: COUNT(${id})
+     sql: ${inventory_item_id})
     filters: [status: "Returned"];;
-    value_format_name: usd
   }
 
   measure: items_sold {
-    type: number
+    type: count_distinct
     description: "Number of items sold"
-    sql: COUNT(${id})
+    sql: ${inventory_item_id}
       filters: [status: "Complete"];;
-    value_format_name: usd
   }
 
   measure: items_return_rate {
     type: number
     description: "Number of Items Returned / total number of items sold"
     sql: ${items_returned} / ${items_sold};;
-    value_format_name: usd
+    value_format_name: percent_1
   }
 
   dimension_group: shipped {
