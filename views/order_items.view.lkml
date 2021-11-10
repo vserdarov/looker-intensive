@@ -73,8 +73,13 @@ view: order_items {
   dimension: is_returned {
     type: yesno
     description: "Calculates whether the order was returned or not"
-    sql: ${returned_date} IS NOT NULL;;
-    group_label: "Shipping"
+    sql: ${status} = "Returned";;
+  }
+
+  dimension: is_cancelled_or_returned{
+    type: yesno
+    description: "Shows whether the order was returned or cancelled"
+    sql: ${status} = "Returned" or ${status} = "Cancelled"  ;;
   }
 
   dimension: sale_price {
@@ -82,14 +87,14 @@ view: order_items {
     sql: ${TABLE}."SALE_PRICE" ;;
   }
 
-  measure: total_sales_price {
+  measure: total_sale_price {
     type: sum
     description: "Total sales from items sold"
     sql: ${sale_price} ;;
     value_format_name: usd
   }
 
-  measure: average_sales_price {
+  measure: average_sale_price {
     type: average
     description: "Average sale price of items sold"
     sql: ${sale_price} ;;
@@ -104,31 +109,55 @@ view: order_items {
   }
 
   measure: total_gross_revenue {
-    type: number
+    type: sum
     description: "Total revenue from completed sales (cancelled and returned orders excluded)"
-    sql: ${total_sales_price}
-    filters: [status: "complete"];;
+    sql: ${sale_price}
+    filters: [is_cancelled_or_returned: "No"];;
+    value_format_name: usd
+  }
+
+  measure: total_cost_items_sold {
+    type: sum
+    description: "Total cost of items sold from inventory"
+    sql: ${inventory_items.cost} ;;
+    filters: [is_cancelled_or_returned: "No"]
+  }
+
+  measure: average_cost_items_sold {
+    type: average
+    description: "Total cost of items sold from inventory"
+    sql: ${inventory_items.cost} ;;
+    filters: [is_cancelled_or_returned: "No"]
+  }
+
+  dimension: margin {
+    description: "Sales - Cost"
+    type: number
+    hidden: yes
+    sql: ${sale_price} - ${inventory_items.cost} ;;
     value_format_name: usd
   }
 
   measure: total_gross_margin_amount {
-    type: number
+    type: sum
     description: "Total difference between the total revenue from completed sales and the cost of the goods that were sold"
-    sql: ${order_items.total_sales_price} - ${inventory_items.total_cost} ;;
+    sql: ${margin};;
+    filters: [is_cancelled_or_returned: "No"]
     value_format_name: usd
   }
 
   measure: average_gross_margin_amount {
     type: average
     description: "Average difference between the total revenue from completed sales and the cost of the goods that were sold"
-    sql: ${order_items.sale_price} - ${inventory_items.cost} ;;
+    sql: ${margin};;
+    filters: [is_cancelled_or_returned: "No"]
     value_format_name: usd
   }
 
-  measure: gross_margin {
+  measure: gross_margin_percentage {
     type: number
     description: "Total Gross Margin Amount / Total Gross Revenue"
-    sql: ${total_gross_margin_amount} / ${inventory_items.total_cost} ;;
+    sql: 1.0 * ${total_gross_margin_amount} / nullif(${total_gross_revenue},0);;
     value_format_name: percent_1
   }
 
@@ -136,42 +165,47 @@ view: order_items {
     type: count_distinct
     description: "Number of items that were returned by dissatisfied customers"
      sql: ${inventory_item_id})
-    filters: [status: "Returned"];;
+    filters: [is_returned: "Yes"];;
   }
 
   measure: items_sold {
     type: count_distinct
     description: "Number of items sold"
     sql: ${inventory_item_id}
-      filters: [status: "Complete"];;
+      filters: [is_cancelled_or_returned: "No"];;
   }
 
   measure: items_return_rate {
     type: number
     description: "Number of Items Returned / total number of items sold"
-    sql: ${items_returned} / ${items_sold};;
+    sql: 1.0 * ${items_returned} / ifnull(${items_sold}, 0);;
     value_format_name: percent_1
+  }
+
+  measure: total_number_of_customers {
+    type: count_distinct
+    description: "Total number of customers"
+    sql:${user_id};;
   }
 
   measure: customers_with_returned_items {
     type: count_distinct
     description: "Number of users who have returned an item at some point"
     sql: ${user_id}
-      filters: [order_items.status: "Returned"];;
+      filters: [is_returned: "Yes"];;
   }
 
-  measure: users_with_returns {
+  measure: users_with_returns_percentage {
     type: number
     description: "Number of Customer Returning Items / total number of customers"
-    sql: ${customers_with_returned_items} / count_distinct(${user_id})
-      filters: [order_items.status: "Returned"];;
+    sql: 1.0 * ${customers_with_returned_items} / nullif(${total_number_of_customers},0);;
     value_format_name: percent_1
   }
 
-  measure: average_customer_spend {
+  measure: average_customer_spend_percentage {
     type: number
     description: "Total Sale Price / total number of customers"
-    sql: order_items.total_sales_price / nullif(count_distinct(${user_id}), 0);;
+    sql: 1.0 * total_sales_price / nullif(${total_number_of_customers}), 0);;
     value_format_name: percent_1
   }
 
