@@ -9,28 +9,6 @@ view: users {
     sql: ${TABLE}."ID" ;;
   }
 
-  measure: customers_with_returned_items {
-    type: count_distinct
-    description: "Number of users who have returned an item at some point"
-    sql: ${id}
-      filters: [order_items.status: "Returned"];;
-  }
-
-  measure: users_with_returns {
-    type: number
-    description: "Number of Customer Returning Items / total number of customers"
-    sql: ${customers_with_returned_items} / count_distinct(${id})
-      filters: [order_items.status: "Returned"];;
-    value_format_name: percent_1
-  }
-
-  measure: average_customer_spend {
-    type: number
-    description: "Total Sale Price / total number of customers"
-    sql: order_items.total_sales_price / count_distinct(${id});;
-    value_format_name: percent_1
-  }
-
   dimension: age {
     type: number
     sql: ${TABLE}."AGE" ;;
