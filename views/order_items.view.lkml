@@ -222,8 +222,15 @@ view: order_items {
   measure: average_customer_spend_percentage {
     type: number
     description: "Total Sale Price / total number of customers"
-    sql: 1.0 * total_sales_price / nullif(${total_number_of_customers}), 0);;
+    sql: 1.0 * ${total_sale_price} / nullif(${total_number_of_customers}, 0);;
     value_format_name: percent_1
+  }
+
+  measure: average_customer_spend {
+    description: "Total Sale Price / total number of customers"
+    type: number
+    sql:  ${total_sale_price} / nullif(${total_number_of_customers},0) ;;
+    value_format_name: usd
   }
 
   dimension_group: shipped {
