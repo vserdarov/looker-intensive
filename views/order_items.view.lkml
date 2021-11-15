@@ -79,7 +79,7 @@ view: order_items {
   dimension: is_cancelled_or_returned{
     type: yesno
     description: "Shows whether the order was returned or cancelled"
-    sql: ${status} = "Returned" or ${status} = "Cancelled"  ;;
+    sql: ${status} = 'Returned' or ${status} = 'Cancelled'  ;;
   }
 
   dimension: sale_price {
