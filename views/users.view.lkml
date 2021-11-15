@@ -21,6 +21,17 @@ view: users {
     sql: ${age} ;;
   }
 
+  dimension: new_customers {
+    type: yesno
+    sql: datediff(day,${created_raw},current_date())<91;;
+  }
+
+  dimension: new_or_returning_customers {
+
+    type: string
+    sql: CASE WHEN ${new_customers} THEN 'New' ELSE 'Returning' END;;
+  }
+
   dimension: city {
     type: string
     sql: ${TABLE}."CITY" ;;
