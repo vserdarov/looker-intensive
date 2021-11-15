@@ -50,6 +50,13 @@ explore: order_items {
     relationship: many_to_one
   }
 
+  sql_always_where:
+  {% if order_items.current_vs_previous._in_query %} ${current_vs_previous} is not null {% else %} 1=1 {% endif %}
+  ;;
+
+  join: parameters {
+  }
+
   join: users {
     type: left_outer
     sql_on: ${order_items.user_id} = ${users.id} ;;

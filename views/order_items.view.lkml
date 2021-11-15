@@ -25,6 +25,20 @@ view: order_items {
     sql: ${TABLE}."CREATED_AT" ;;
   }
 
+  dimension: current_vs_previous {
+    description: "current vs previous period comparison"
+    type: string
+    sql:
+    CASE
+      WHEN DATE_TRUNC({% parameter parameters.select_timeframe %}, ${created_raw}) = DATE_TRUNC({% parameter parameters.select_timeframe %}, {% if parameters.select_reference_date._is_filtered %}{% parameter parameters.select_reference_date %} {% else %} ${parameters.current_timestamp_raw}{% endif %})
+        THEN '{% if parameters.select_reference_date._is_filtered %}Reference {% else %}Current {% endif %} {% parameter parameters.select_timeframe %}'
+      WHEN DATE_TRUNC({% parameter parameters.select_timeframe %}, ${created_raw}) = DATE_TRUNC({% parameter parameters.select_timeframe %}, DATEADD({% parameter parameters.select_timeframe %}, -1, {% if parameters.select_reference_date._is_filtered %}{% parameter parameters.select_reference_date %} {% else %} ${parameters.current_timestamp_raw}{% endif %}))
+        THEN 'Previous {% parameter parameters.select_timeframe %}'
+      ELSE NULL
+    END
+  ;;
+  }
+
   dimension_group: delivered {
     type: time
     timeframes: [
