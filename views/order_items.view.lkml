@@ -111,8 +111,8 @@ view: order_items {
   measure: total_gross_revenue {
     type: sum
     description: "Total revenue from completed sales (cancelled and returned orders excluded)"
-    sql: ${sale_price}
-    filters: [is_cancelled_or_returned: "No"];;
+    sql: ${sale_price};;
+    filters: [is_cancelled_or_returned: "No"]
     value_format_name: usd
     drill_fields: [detail*]
   }
