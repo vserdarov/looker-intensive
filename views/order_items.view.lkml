@@ -129,7 +129,7 @@ view: order_items {
     description: "Total revenue from completed sales (cancelled and returned orders excluded)"
     sql: ${sale_price};;
     filters: [is_cancelled_or_returned: "No"]
-    value_format_name: usd
+    value_format_name: usd_0
     drill_fields: [detail*]
   }
 
@@ -160,7 +160,7 @@ view: order_items {
     description: "Total difference between the total revenue from completed sales and the cost of the goods that were sold"
     sql: ${margin};;
     filters: [is_cancelled_or_returned: "No"]
-    value_format_name: usd
+    value_format_name: usd_0
   }
 
   measure: average_gross_margin_amount {
@@ -175,7 +175,7 @@ view: order_items {
     type: number
     description: "Total Gross Margin Amount / Total Gross Revenue"
     sql: 1.0 * ${total_gross_margin_amount} / nullif(${total_gross_revenue},0);;
-    value_format_name: percent_1
+    value_format_name: percent_0
   }
 
   measure: items_returned {
@@ -230,7 +230,7 @@ view: order_items {
     description: "Total Sale Price / total number of customers"
     type: number
     sql:  ${total_sale_price} / nullif(${total_number_of_customers},0) ;;
-    value_format_name: usd
+    value_format_name: usd_0
   }
 
   dimension_group: shipped {

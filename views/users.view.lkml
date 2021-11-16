@@ -16,7 +16,7 @@ view: users {
 
   dimension: age_tier {
     type: bin
-    bins: [0, 18, 25, 35, 45, 55, 65, 75, 90]
+    bins: [15, 26, 36, 51, 66]
     style: integer
     sql: ${age} ;;
   }
@@ -29,7 +29,7 @@ view: users {
   dimension: new_or_returning_customers {
 
     type: string
-    sql: CASE WHEN ${new_customers} THEN 'New' ELSE 'Returning' END;;
+    sql: CASE WHEN ${new_customers} THEN 'New' ELSE 'Return' END;;
   }
 
   dimension: city {
