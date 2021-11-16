@@ -46,8 +46,8 @@ view: users {
 
   dimension: country {
     type: string
-    map_layer_name: countries
     sql: ${TABLE}."COUNTRY" ;;
+    map_layer_name: countries
   }
 
   dimension_group: created {
@@ -97,6 +97,7 @@ view: users {
   dimension: state {
     type: string
     sql: ${TABLE}."STATE" ;;
+    map_layer_name: us_states
   }
 
   dimension: traffic_source {
