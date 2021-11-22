@@ -12,6 +12,17 @@ view: products {
   dimension: brand {
     type: string
     sql: ${TABLE}."BRAND" ;;
+    drill_fields: [category, name]
+    link: {
+      label: "Google"
+      url: "http://www.google.com/search?q={{ value }}"
+      icon_url: "http://google.com/favicon.ico"
+    }
+    link: {
+      label: "Facebook"
+      url: "http://facebook.com/search?q={{ value }}"
+      icon_url: "http://facebook.com/favicon.ico"
+    }
   }
 
   dimension: category {
@@ -38,6 +49,7 @@ view: products {
   dimension: name {
     type: string
     sql: ${TABLE}."NAME" ;;
+    label: "Item Name"
   }
 
   dimension: retail_price {

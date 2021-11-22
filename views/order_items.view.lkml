@@ -130,7 +130,6 @@ view: order_items {
     sql: ${sale_price};;
     filters: [is_cancelled_or_returned: "No"]
     value_format_name: usd_0
-    drill_fields: [detail*]
   }
 
   measure: total_cost_items_sold {
