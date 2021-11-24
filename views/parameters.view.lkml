@@ -1,39 +1,36 @@
 view: parameters {
 
-  parameter: select_timeframe {
+  parameter: time_period {
     type: unquoted
     default_value: "month"
     allowed_value: {
-      value: "year"
-      label: "Years"
-    }
-    allowed_value: {
-      value: "month"
-      label: "Months"
+      value: "day"
+      label: "Days"
     }
     allowed_value: {
       value: "week"
       label: "Weeks"
     }
     allowed_value: {
-      value: "day"
-      label: "Days"
+      value: "month"
+      label: "Months"
+    }
+    allowed_value: {
+      value: "year"
+      label: "Years"
     }
   }
 
-  parameter: select_reference_date {
+  parameter: reference_date {
     type: date
     convert_tz: no
 
   }
 
   dimension_group: current_timestamp {
-    hidden: yes
     type: time
     timeframes: [raw,date,hour_of_day,day_of_week_index,day_of_month,day_of_year]
-    convert_tz: yes
-    #    sql: current_timestamp ;; #### SNOWFLAKE
-    sql: CURRENT_TIMESTAMP() ;; #### BIGQUERY
-#     sql: GETDATE() ;; #### REDSHIFT
+    convert_tz: no
+    sql: CURRENT_TIMESTAMP() ;;
   }
 }

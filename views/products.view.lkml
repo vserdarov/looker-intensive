@@ -15,13 +15,13 @@ view: products {
     drill_fields: [category, name]
     link: {
       label: "Google"
-      url: "http://www.google.com/search?q={{ value }}"
-      icon_url: "http://google.com/favicon.ico"
+      url: "https://www.google.com/search?q={{ value }}"
+      icon_url: "https://google.com/favicon.ico"
     }
     link: {
       label: "Facebook"
-      url: "http://facebook.com/search?q={{ value }}"
-      icon_url: "http://facebook.com/favicon.ico"
+      url: "https://www.facebook.com/search?q={{ value }}"
+      icon_url: "https://facebook.com/favicon.ico"
     }
   }
 
