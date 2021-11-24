@@ -26,11 +26,6 @@ view: users {
     sql: datediff(day,${created_raw},current_date())<91;;
   }
 
-  dimension: new_or_returning_customers {
-
-    type: string
-    sql: CASE WHEN ${new_customers} THEN 'New' ELSE 'Return' END;;
-  }
 
   dimension: city {
     type: string
@@ -56,6 +51,7 @@ view: users {
       raw,
       time,
       date,
+      day_of_month,
       week,
       month,
       quarter,
@@ -113,6 +109,7 @@ view: users {
 
   measure: count {
     type: count
+    label: "# of Users"
     drill_fields: [id, last_name, first_name, events.count, order_items.count]
   }
 }

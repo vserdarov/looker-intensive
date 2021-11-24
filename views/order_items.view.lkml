@@ -11,6 +11,7 @@ view: order_items {
 
   dimension_group: created {
     type: time
+    label: "Order"
     timeframes: [
       raw,
       time,
@@ -23,20 +24,6 @@ view: order_items {
       year
     ]
     sql: ${TABLE}."CREATED_AT" ;;
-  }
-
-  dimension: current_vs_previous {
-    description: "current vs previous period comparison"
-    type: string
-    sql:
-  CASE
-      WHEN DATE_TRUNC({% parameter parameters.time_period %}, ${created_raw}) = DATE_TRUNC({% parameter parameters.time_period %}, {% if parameters.reference_date._is_filtered %}{% parameter parameters.time_period %} {% else %} ${parameters.current_timestamp_raw}{% endif %})
-        THEN '{% if parameters.reference_date._is_filtered %}Reference {% else %}Current {% endif %} {% parameter parameters.time_period %}'
-      WHEN DATE_TRUNC({% parameter parameters.time_period %}, ${created_raw}) = DATE_TRUNC({% parameter parameters.time_period %}, DATEADD({% parameter parameters.time_period %}, -1, {% if parameters.reference_date._is_filtered %}{% parameter parameters.time_period %} {% else %} ${parameters.current_timestamp_raw}{% endif %}))
-        THEN 'Previous {% parameter parameters.time_period %}'
-      ELSE NULL
-    END
-  ;;
   }
 
   dimension_group: delivered {
